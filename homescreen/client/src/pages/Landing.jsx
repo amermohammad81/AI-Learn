@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FileText, Layers, HelpCircle, Presentation,
@@ -8,14 +8,14 @@ import {
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // TRANSLATIONS  â€” EN is default, AR is alternate
-// Section indices: 0=hero  1=how-it-works  2..5=features  6=register
+// Section indices: 0=hero  1=register  2..5=features
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const T = {
   en: {
     brand: "Lerrn", brandSub: "AI",
-    nav: ["How it Works", "Features", "Get Access"],
+    nav: ["Features", "Get Access"],
     // navTargets maps each nav item â†’ scroll section index
-    navTargets: [1, 2, 6],
+    navTargets: [2, 1],
     ctaNav: "Start Free",
     announcementBar: "Beta launching soon - Register now for free early access",
     subheadline: "AI Lecture Assistant",
@@ -92,8 +92,8 @@ const T = {
   },
   ar: {
     brand: "ليرن", brandSub: "AI",
-    nav: ["كيف يعمل", "المميزات", "الوصول المبكر"],
-    navTargets: [1, 2, 6],
+    nav: ["\u0627\u0644\u0645\u0645\u064a\u0632\u0627\u062a", "\u0627\u0644\u0648\u0635\u0648\u0644 \u0627\u0644\u0645\u0628\u0643\u0631"],
+    navTargets: [2, 1],
     ctaNav: "ابدأ مجاناً",
     announcementBar: "الإطلاق التجريبي قريب - سجّل الآن للوصول المبكر المجاني",
     subheadline: "مساعد المحاضرات بالذكاء الاصطناعي",
@@ -254,11 +254,10 @@ function Header({ lang, setLang, t, isRTL, scrollTo, activeSection }) {
           <nav className={`hidden md:flex items-center gap-0.5 ${isRTL ? "flex-row-reverse" : ""}`}>
             {t.nav.map((label, i) => {
               const target = t.navTargets[i];
-              const featuresStart = t.navTargets[1];
-              const registerSection = t.navTargets[2];
+              const featuresStart = t.navTargets[0];
               const isFeatureNav = target === featuresStart;
               const isActive = isFeatureNav
-                ? activeSection >= featuresStart && activeSection < registerSection
+                ? activeSection >= featuresStart
                 : activeSection === target;
               return (
                 <motion.button key={i} onClick={() => scrollTo(target)}
@@ -296,7 +295,7 @@ function Header({ lang, setLang, t, isRTL, scrollTo, activeSection }) {
             </div>
 
             {/* CTA */}
-            <motion.button onClick={() => scrollTo(t.navTargets[2])}
+            <motion.button onClick={() => scrollTo(t.navTargets[1])}
               whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }}
               className="hidden md:flex items-center gap-1.5 text-white text-xs font-bold px-4 py-2 rounded-xl"
               style={{ background: "linear-gradient(135deg,#a855f7,#ec4899)", boxShadow: "0 0 22px rgba(168,85,247,0.35)" }}>
@@ -338,7 +337,7 @@ function Header({ lang, setLang, t, isRTL, scrollTo, activeSection }) {
                   {label}
                 </button>
               ))}
-              <button onClick={() => { scrollTo(t.navTargets[2]); setMobileOpen(false); }}
+              <button onClick={() => { scrollTo(t.navTargets[1]); setMobileOpen(false); }}
                 className="w-full px-4 py-3 rounded-xl text-sm font-bold text-white mt-1"
                 style={{ background: "linear-gradient(135deg,#a855f7,#ec4899)" }}>
                 {t.ctaNav}
@@ -1254,13 +1253,13 @@ export default function App() {
           overscrollBehaviorY: "contain",
         }}>
         <HeroSection lang={lang} t={t} isRTL={isRTL} />          {/* 0 */}
-        <HowItWorksSection t={t} isRTL={isRTL} />                {/* 1 */}
+        <RegistrationSection t={t} isRTL={isRTL} />              {/* 1 */}
         {[0, 1, 2, 3].map((featureIndex) => (
           <ShowcaseSection key={featureIndex} t={t} isRTL={isRTL} featureIndex={featureIndex} />
         ))}
-        <RegistrationSection t={t} isRTL={isRTL} />              {/* 6 */}
       </div>
     </div>
   );
 }
+
 

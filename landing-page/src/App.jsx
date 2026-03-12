@@ -8,14 +8,14 @@ import {
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // TRANSLATIONS  â€” EN is default, AR is alternate
-// Section indices: 0=hero  1=how-it-works  2=features  3=register
+// Section indices: 0=hero  1=register  2=features
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const T = {
   en: {
     brand: "Lerrn", brandSub: "AI",
-    nav: ["How it Works", "Features", "Get Access"],
+    nav: ["Features", "Get Access"],
     // navTargets maps each nav item â†’ scroll section index
-    navTargets: [1, 2, 3],
+    navTargets: [2, 1],
     ctaNav: "Start Free",
     announcementBar: "Beta launching soon - Register now for free early access",
     subheadline: "AI Lecture Assistant",
@@ -92,8 +92,8 @@ const T = {
   },
   ar: {
     brand: "ليرن", brandSub: "AI",
-    nav: ["كيف يعمل", "المميزات", "الوصول المبكر"],
-    navTargets: [1, 2, 3],
+    nav: ["المميزات", "الوصول المبكر"],
+    navTargets: [2, 1],
     ctaNav: "ابدأ مجاناً",
     announcementBar: "الإطلاق التجريبي قريب - سجّل الآن للوصول المبكر المجاني",
     subheadline: "مساعد المحاضرات بالذكاء الاصطناعي",
@@ -291,7 +291,7 @@ function Header({ lang, setLang, t, isRTL, scrollTo, activeSection }) {
             </div>
 
             {/* CTA */}
-            <motion.button onClick={() => scrollTo(3)}
+            <motion.button onClick={() => scrollTo(1)}
               whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }}
               className="hidden md:flex items-center gap-1.5 text-white text-xs font-bold px-4 py-2 rounded-xl"
               style={{ background: "linear-gradient(135deg,#a855f7,#ec4899)", boxShadow: "0 0 22px rgba(168,85,247,0.35)" }}>
@@ -333,7 +333,7 @@ function Header({ lang, setLang, t, isRTL, scrollTo, activeSection }) {
                   {label}
                 </button>
               ))}
-              <button onClick={() => { scrollTo(3); setMobileOpen(false); }}
+              <button onClick={() => { scrollTo(1); setMobileOpen(false); }}
                 className="w-full px-4 py-3 rounded-xl text-sm font-bold text-white mt-1"
                 style={{ background: "linear-gradient(135deg,#a855f7,#ec4899)" }}>
                 {t.ctaNav}
@@ -999,7 +999,7 @@ function ShowcaseSection({ lang, t, isRTL }) {
 }
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// REGISTRATION  â€” section 3
+// REGISTRATION  â€” section 1
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function RegistrationSection({ t, isRTL }) {
   const [name, setName] = useState("");
@@ -1215,7 +1215,7 @@ function RegistrationSection({ t, isRTL }) {
 }
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// ROOT  â€” sections: 0=hero  1=how-it-works  2=features  3=register
+// ROOT  â€” sections: 0=hero  1=register  2=features
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function App() {
   const [lang, setLang] = useState("en");   // â† English is default
@@ -1261,9 +1261,8 @@ export default function App() {
       <div ref={scrollRef} className="overflow-y-scroll"
         style={{ scrollSnapType: "y mandatory", height: "100vh" }}>
         <HeroSection lang={lang} t={t} isRTL={isRTL} />          {/* 0 */}
-        <HowItWorksSection t={t} isRTL={isRTL} />                {/* 1 */}
+        <RegistrationSection t={t} isRTL={isRTL} />              {/* 1 */}
         <ShowcaseSection lang={lang} t={t} isRTL={isRTL} />      {/* 2 */}
-        <RegistrationSection t={t} isRTL={isRTL} />              {/* 3 */}
       </div>
     </div>
   );
