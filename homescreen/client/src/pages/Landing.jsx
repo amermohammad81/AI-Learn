@@ -8,14 +8,14 @@ import {
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // TRANSLATIONS  â€” EN is default, AR is alternate
-// Section indices: 0=hero  1=how-it-works  2=features  3=register
+// Section indices: 0=hero  1=how-it-works  2..5=features  6=register
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const T = {
   en: {
     brand: "Lerrn", brandSub: "AI",
     nav: ["How it Works", "Features", "Get Access"],
     // navTargets maps each nav item â†’ scroll section index
-    navTargets: [1, 2, 3],
+    navTargets: [1, 2, 6],
     ctaNav: "Start Free",
     announcementBar: "Beta launching soon - Register now for free early access",
     subheadline: "AI Lecture Assistant",
@@ -93,7 +93,7 @@ const T = {
   ar: {
     brand: "ليرن", brandSub: "AI",
     nav: ["كيف يعمل", "المميزات", "الوصول المبكر"],
-    navTargets: [1, 2, 3],
+    navTargets: [1, 2, 6],
     ctaNav: "ابدأ مجاناً",
     announcementBar: "الإطلاق التجريبي قريب - سجّل الآن للوصول المبكر المجاني",
     subheadline: "مساعد المحاضرات بالذكاء الاصطناعي",
@@ -254,7 +254,12 @@ function Header({ lang, setLang, t, isRTL, scrollTo, activeSection }) {
           <nav className={`hidden md:flex items-center gap-0.5 ${isRTL ? "flex-row-reverse" : ""}`}>
             {t.nav.map((label, i) => {
               const target = t.navTargets[i];
-              const isActive = activeSection === target;
+              const featuresStart = t.navTargets[1];
+              const registerSection = t.navTargets[2];
+              const isFeatureNav = target === featuresStart;
+              const isActive = isFeatureNav
+                ? activeSection >= featuresStart && activeSection < registerSection
+                : activeSection === target;
               return (
                 <motion.button key={i} onClick={() => scrollTo(target)}
                   className="relative px-4 py-2 rounded-xl text-sm font-medium"
@@ -291,7 +296,7 @@ function Header({ lang, setLang, t, isRTL, scrollTo, activeSection }) {
             </div>
 
             {/* CTA */}
-            <motion.button onClick={() => scrollTo(3)}
+            <motion.button onClick={() => scrollTo(t.navTargets[2])}
               whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.95 }}
               className="hidden md:flex items-center gap-1.5 text-white text-xs font-bold px-4 py-2 rounded-xl"
               style={{ background: "linear-gradient(135deg,#a855f7,#ec4899)", boxShadow: "0 0 22px rgba(168,85,247,0.35)" }}>
@@ -333,7 +338,7 @@ function Header({ lang, setLang, t, isRTL, scrollTo, activeSection }) {
                   {label}
                 </button>
               ))}
-              <button onClick={() => { scrollTo(3); setMobileOpen(false); }}
+              <button onClick={() => { scrollTo(t.navTargets[2]); setMobileOpen(false); }}
                 className="w-full px-4 py-3 rounded-xl text-sm font-bold text-white mt-1"
                 style={{ background: "linear-gradient(135deg,#a855f7,#ec4899)" }}>
                 {t.ctaNav}
@@ -902,97 +907,61 @@ function PPTPanel({ t, isRTL }) {
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const FEAT_ICONS = [FileText, Layers, HelpCircle, Presentation];
 
-function ShowcaseSection({ lang, t, isRTL }) {
-  const [active, setActive] = useState(0);
-  const [auto, setAuto] = useState(true);
-  useEffect(() => {
-    if (!auto) return;
-    const iv = setInterval(() => setActive(a => (a + 1) % 4), 5000);
-    return () => clearInterval(iv);
-  }, [auto]);
-
-  const panels = [
+function ShowcaseSection({ t, isRTL, featureIndex }) {
+  const Icon = FEAT_ICONS[featureIndex];
+  const panel = [
     <SummaryPanel key="s" t={t} isRTL={isRTL} />,
     <FlashcardPanel key="f" t={t} isRTL={isRTL} />,
     <QuizPanel key="q" t={t} isRTL={isRTL} />,
     <PPTPanel key="p" t={t} isRTL={isRTL} />,
-  ];
-
-  const pick = i => { setActive(i); setAuto(false); };
+  ][featureIndex];
 
   return (
-    <section id="features"
-      style={{ scrollSnapAlign: "start", minHeight: "100vh", position: "relative", overflow: "hidden" }}
-      className="flex flex-col items-center justify-center px-4 py-16">
+    <section
+      id={featureIndex === 0 ? "features" : undefined}
+      style={{ scrollSnapAlign: "start", height: "100vh", position: "relative", overflow: "hidden" }}
+      className="flex items-center justify-center px-4 py-10"
+    >
       <GridBg opacity={0.03} />
-      <RadialGlow opacity={0.09} size="90% 70%" pos="50% 50%" />
+      <RadialGlow opacity={0.1} size="90% 70%" pos="50% 50%" />
 
-      <motion.div initial={{ opacity: 0, y: -20 }} whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }} viewport={{ once: true }}
-        className="text-center mb-10 z-10">
-        <p className="text-indigo-400 text-xs font-semibold tracking-widest uppercase mb-3">{isRTL ? "Ø§Ù„Ù…ÙŠØ²Ø§Øª" : "Features"}</p>
-        <h2 className="font-black leading-tight text-2xl md:text-4xl">{t.showcaseTitle}</h2>
-        <p className="text-slate-500 text-sm mt-2">{t.showcaseSub}</p>
-      </motion.div>
-
-      <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.18 }} viewport={{ once: true }}
-        className="relative z-10 w-full flex flex-col md:flex-row gap-4" style={{ maxWidth: 920 }}>
-
-        {/* Sidebar tabs */}
-        <div className="md:w-60 shrink-0 flex md:flex-col flex-row gap-2 overflow-x-auto md:overflow-visible pb-1 md:pb-0">
-          {t.features.map((feat, i) => {
-            const Icon = FEAT_ICONS[i];
-            const isActive = active === i;
-            return (
-              <motion.button key={i} onClick={() => pick(i)}
-                className={`relative flex-shrink-0 md:flex-shrink rounded-2xl border px-4 py-3 overflow-hidden transition-all ${isRTL ? "text-right" : "text-left"} ${isActive ? "border-indigo-500/55 bg-indigo-100" : "border-purple-200 bg-white hover:border-purple-300"}`}
-                style={isActive ? { boxShadow: "0 0 30px rgba(99,102,241,0.26), inset 0 0 22px rgba(99,102,241,0.06)" } : {}}>
-                {isActive && (
-                  <motion.div layoutId="tabGlow" className="absolute inset-0 rounded-2xl bg-indigo-600/10"
-                    transition={{ type: "spring", stiffness: 180, damping: 22 }} />
-                )}
-                <div className={`relative flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
-                  <div className={`p-2 rounded-xl ${isActive ? "bg-indigo-600/32" : "bg-purple-100"}`}>
-                    <Icon size={14} className={isActive ? "text-indigo-300" : "text-slate-500"} />
-                  </div>
-                  <div className="min-w-0">
-                    <div className={`text-sm font-semibold ${isActive ? "text-indigo-900" : "text-slate-600"}`}>{feat}</div>
-                    <div className="text-xs text-slate-600 hidden md:block mt-0.5 leading-tight line-clamp-1">{t.featureDescs[i]}</div>
-                  </div>
-                  {isActive && !isRTL && <ChevronRight size={11} className="text-indigo-400 ml-auto hidden md:block shrink-0" />}
-                </div>
-              </motion.button>
-            );
-          })}
+      <motion.div
+        key={`feature-slide-${featureIndex}`}
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45 }}
+        viewport={{ once: true }}
+        className="relative z-10 w-full"
+        style={{ maxWidth: 960 }}
+      >
+        <div className={`flex items-center gap-3 mb-4 ${isRTL ? "flex-row-reverse" : ""}`}>
+          <div className="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
+            <Icon size={18} />
+          </div>
+          <div className={isRTL ? "text-right" : ""}>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-400">
+              {isRTL ? `الخاصية ${featureIndex + 1}` : `Feature ${featureIndex + 1}`}
+            </p>
+            <h3 className="text-lg md:text-xl font-bold text-slate-800">{t.features[featureIndex]}</h3>
+          </div>
+          <div className="ml-auto hidden md:flex gap-1.5">
+            {[0, 1, 2, 3].map((i) => (
+              <span key={i} className={`h-1.5 rounded-full transition-all ${i === featureIndex ? "w-8 bg-indigo-500" : "w-3 bg-purple-200"}`} />
+            ))}
+          </div>
         </div>
 
-        {/* Display panel */}
-        <div className="flex-1 rounded-3xl border border-purple-200 bg-white p-5 relative overflow-hidden"
-          style={{ minHeight: 340, boxShadow: "0 0 55px rgba(99,102,241,0.07)" }}>
-          <motion.div key={`bg-${active}`} className="absolute inset-0 pointer-events-none"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.9 }}
-            style={{ background: "radial-gradient(ellipse 65% 55% at 50% 50%, rgba(99,102,241,0.1) 0%, transparent 70%)" }} />
-          <AnimatePresence mode="wait">
-            <motion.div key={active}
-              initial={{ opacity: 0, y: 18, filter: "blur(4px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              exit={{ opacity: 0, y: -18, filter: "blur(4px)" }}
-              transition={{ duration: 0.48 }}
-              className="relative z-10 h-full">
-              {panels[active]}
-            </motion.div>
-          </AnimatePresence>
+        <div className="rounded-3xl border border-purple-200 bg-white p-5 relative overflow-hidden"
+          style={{ minHeight: 360, boxShadow: "0 0 55px rgba(99,102,241,0.08)" }}>
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.35 }}
+            style={{ background: "radial-gradient(ellipse 65% 55% at 50% 50%, rgba(99,102,241,0.1) 0%, transparent 70%)" }}
+          />
+          <div className="relative z-10 h-full">{panel}</div>
         </div>
-      </motion.div>
-
-      {/* Progress dots */}
-      <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.5 }}
-        viewport={{ once: true }} className="flex gap-2 mt-6 z-10">
-        {[0, 1, 2, 3].map(i => (
-          <button key={i} onClick={() => pick(i)}
-            className={`h-1.5 rounded-full transition-all duration-300 ${active === i ? "w-8 bg-indigo-500" : "w-3 bg-white/15 hover:bg-white/25"}`} />
-        ))}
       </motion.div>
     </section>
   );
@@ -1215,22 +1184,41 @@ function RegistrationSection({ t, isRTL }) {
 }
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// ROOT  â€” sections: 0=hero  1=how-it-works  2=features  3=register
+// ROOT  â€” sections: 0=hero  1=how-it-works  2..5=features  6=register
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function App() {
   const [lang, setLang] = useState("en");   // â† English is default
   const t = T[lang];
   const isRTL = lang === "ar";
   const scrollRef = useRef(null);
+  const sectionRef = useRef(0);
+  const rafRef = useRef(null);
   const [activeSection, setActiveSection] = useState(0);
 
   // Track which snap section is active
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    const onScroll = () => setActiveSection(Math.round(el.scrollTop / el.clientHeight));
+
+    const onScroll = () => {
+      if (rafRef.current !== null) return;
+      rafRef.current = requestAnimationFrame(() => {
+        const next = Math.round(el.scrollTop / el.clientHeight);
+        if (next !== sectionRef.current) {
+          sectionRef.current = next;
+          setActiveSection(next);
+        }
+        rafRef.current = null;
+      });
+    };
+
     el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
   }, []);
 
   // Programmatic scroll to any section by index
@@ -1259,11 +1247,18 @@ export default function App() {
 
       {/* Snap scroll container */}
       <div ref={scrollRef} className="overflow-y-scroll"
-        style={{ scrollSnapType: "y mandatory", height: "100vh" }}>
+        style={{
+          scrollSnapType: "y proximity",
+          height: "100vh",
+          WebkitOverflowScrolling: "touch",
+          overscrollBehaviorY: "contain",
+        }}>
         <HeroSection lang={lang} t={t} isRTL={isRTL} />          {/* 0 */}
         <HowItWorksSection t={t} isRTL={isRTL} />                {/* 1 */}
-        <ShowcaseSection lang={lang} t={t} isRTL={isRTL} />      {/* 2 */}
-        <RegistrationSection t={t} isRTL={isRTL} />              {/* 3 */}
+        {[0, 1, 2, 3].map((featureIndex) => (
+          <ShowcaseSection key={featureIndex} t={t} isRTL={isRTL} featureIndex={featureIndex} />
+        ))}
+        <RegistrationSection t={t} isRTL={isRTL} />              {/* 6 */}
       </div>
     </div>
   );
