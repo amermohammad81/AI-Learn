@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --radius: 0.9rem;
+  --background: 240 25% 94%;
+  --foreground: 231 22% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 231 22% 15%;
+  --border: 237 17% 86%;
+  --primary: 229 87% 58%;
+  --primary-foreground: 0 0% 100%;
+  --muted: 236 20% 92%;
+  --muted-foreground: 230 16% 45%;
+}
+
+* {
+  @apply border-border;
+}
+
+body {
+  font-family: var(--font-cairo), var(--font-space-grotesk), sans-serif;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(106, 119, 255, 0.12), transparent 35%),
+    radial-gradient(circle at 88% 0%, rgba(200, 118, 255, 0.1), transparent 36%),
+    hsl(var(--background));
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes softBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 360ms ease-out;
+}
+
+.animate-soft-bob {
+  animation: softBob 2s ease-in-out infinite;
+}
